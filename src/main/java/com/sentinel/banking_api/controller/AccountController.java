@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.sentinel.banking_api.model.Account;
 import com.sentinel.banking_api.service.AccountService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-    
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -21,6 +18,12 @@ public class AccountController {
     public Account createAccount(@RequestBody Account account) {
         return accountService.createAccount(account);
     }
+
+    @GetMapping("/{id}")
+    public Account getAccountById(@PathVariable Long id) {
+        return accountService.getAccountById(id);
+    }
+    
 
     @GetMapping
     public List<Account> getAllAccounts() {

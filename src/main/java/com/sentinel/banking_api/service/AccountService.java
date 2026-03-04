@@ -1,11 +1,10 @@
 package com.sentinel.banking_api.service;
 
-import java.util.List;
+import java.util.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.Service;
 import com.sentinel.banking_api.model.Account;
 import com.sentinel.banking_api.repository.AccountRepository;
-
 import jakarta.transaction.Transactional;
 
 @Service
@@ -16,6 +15,11 @@ public class AccountService {
 
     public Account createAccount(Account account) {
         return accountRepository.save(account);
+    }
+
+    public Account getAccountById(Long id) {
+        return accountRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Account not found"));
     }
 
     public List<Account> getAllAccounts() {
