@@ -2,10 +2,11 @@ package com.sentinel.banking_api.controller;
 
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.*;
-
 import com.sentinel.banking_api.model.Account;
 import com.sentinel.banking_api.service.AccountService;
+import jakarta.validation.*;
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -15,7 +16,7 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping
-    public Account createAccount(@RequestBody Account account) {
+    public Account createAccount(@Valid @RequestBody Account account) {
         return accountService.createAccount(account);
     }
 

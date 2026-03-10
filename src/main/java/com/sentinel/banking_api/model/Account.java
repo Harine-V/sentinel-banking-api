@@ -1,9 +1,9 @@
 package com.sentinel.banking_api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.*;
+import lombok.Data;
 
 @Entity
 @Data
@@ -17,9 +17,12 @@ public class Account {
 
     @Column(name = "account_holder_name")
     @JsonProperty("accountHolderName")
+    @NotBlank(message = "Account holder name is required")
     private String accountHolderName;
 
     @JsonProperty("balance")
+    @NotNull(message = "Balance cannot be null")
+    @Min(value =0, message="Balance cannot be negative")
     private double balance;
 
     public Account() {}
