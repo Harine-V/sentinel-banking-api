@@ -54,9 +54,11 @@ public class AccountService {
     }
 
     @Transactional
-    public void transfer(Long fronId, Long toId, double amount) {
-        withdraw(fronId,amount);
+    public void transfer(Long fromId, Long toId, double amount) {
+        if(!accountRepository.existsById(toId)) {
+            throw new RuntimeException("Receiver account not found!");
+        }
+        withdraw(fromId,amount);
         deposit(toId,amount);
-    }
-    
+    } 
 }
