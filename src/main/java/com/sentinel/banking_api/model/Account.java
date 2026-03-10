@@ -25,6 +25,8 @@ public class Account {
     @Min(value =0, message="Balance cannot be negative")
     private double balance;
 
+    public Account() {}
+
     public Account(Long id, String accountHolderName, Double balance) {
     this.id = id;
     this.accountHolderName = accountHolderName;

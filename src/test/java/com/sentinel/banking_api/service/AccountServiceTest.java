@@ -42,4 +42,18 @@ public class AccountServiceTest {
         assertEquals(600.0,result.getBalance());
         verify(accountRepository,times(1)).save(any(Account.class));
     }
+
+    @Test
+    public void testTransfer() {
+        Account sender=new Account(1L, "Henry", 1000.0);
+        Account receiver =new Account(2L, "Sarah",500.0);
+        when(accountRepository.findById(1L)).thenReturn(Optional.of(sender));
+        when(accountRepository.findById(2L)).thenReturn(Optional.of(receiver));
+        when(accountRepository.existsById(2L)).thenReturn(true);
+        when(accountRepository.save(any(Account.class))).thenReturn(sender);
+        accountService.transfer(1L,2L,300.0);
+        assertEquals(700,sender.getBalance());
+        assertEquals(800,receiver.getBalance());
+        verify(accountRepository,times(2)).save(any(Account.class));
+    }
 }
