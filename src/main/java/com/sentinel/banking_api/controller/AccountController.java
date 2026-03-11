@@ -4,9 +4,12 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.*;
-import com.sentinel.banking_api.model.Account;
+import com.sentinel.banking_api.model.*;
 import com.sentinel.banking_api.service.AccountService;
 import jakarta.validation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -25,7 +28,6 @@ public class AccountController {
         return accountService.getAccountById(id);
     }
     
-
     @GetMapping
     public List<Account> getAllAccounts() {
         return accountService.getAllAccounts();
@@ -56,6 +58,11 @@ public class AccountController {
         double amount=((Number) request.get("amount")).doubleValue();
         accountService.transfer(fromId,toId,amount);
         return "Transfer successful";
+    }
+
+    @GetMapping("/{id}/history")
+    public List <Transaction> getHistory(@PathVariable Long id) {
+        return accountService.getAccountHistory(id);
     }
     
 }
