@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
 import com.sentinel.banking_api.exception.AccountNotFoundException;
 import com.sentinel.banking_api.model.Account;
 import com.sentinel.banking_api.model.Transaction;
-import com.sentinel.banking_api.repository.*;
+import com.sentinel.banking_api.model.TransactionType;
+import com.sentinel.banking_api.repository.AccountRepository;
+import com.sentinel.banking_api.repository.TransactionRepository;
+
 import jakarta.transaction.Transactional;
 
 @Service
@@ -54,7 +56,8 @@ public class AccountService {
         Transaction transaction=new Transaction(
             id,
             amount,
-            "Deposit",
+            TransactionType.DEPOSIT,
+            "Manual Deposit",
             LocalDateTime.now()
         );
         transactionRepository.save(transaction);
@@ -75,7 +78,8 @@ public class AccountService {
         Transaction transaction=new Transaction(
             id,
             -amount,
-            "Withdraw",
+            TransactionType.WITHDRAWAL,
+            "Manual Withdraw",
             LocalDateTime.now()
         );
         transactionRepository.save(transaction);
@@ -94,6 +98,7 @@ public class AccountService {
         Transaction transactionFrom=new Transaction(
             fromId,
             -amount,
+            TransactionType.TRANSFER,
             "Transfer to Account: "+toId,
             LocalDateTime.now()
         );
@@ -101,6 +106,7 @@ public class AccountService {
         Transaction transactionTo=new Transaction(
             toId,
             amount,
+            TransactionType.TRANSFER,
             "Received from Account: "+fromId,
             LocalDateTime.now()
         );
@@ -109,6 +115,6 @@ public class AccountService {
     } 
 
     public List<Transaction> getAccountHistory(Long accountId) {
-        return transactionRepository.findByAccountId(accountId);
+        return transactionRepository.findByAccountIdOrderByTimestampDesc(accountId);
     }
 }
