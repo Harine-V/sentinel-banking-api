@@ -8,7 +8,6 @@ import com.sentinel.banking_api.model.*;
 import com.sentinel.banking_api.service.AccountService;
 import jakarta.validation.*;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -63,6 +62,12 @@ public class AccountController {
     @GetMapping("/{id}/history")
     public List <Transaction> getHistory(@PathVariable Long id) {
         return accountService.getAccountHistory(id);
+    }
+
+    @PostMapping("/calculate-interest")
+    public String triggerInterest() {
+        accountService.calculateInterest();
+        return "Interest calculated for all accounts!";
     }
     
 }

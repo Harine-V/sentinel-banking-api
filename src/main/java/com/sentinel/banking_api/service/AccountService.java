@@ -2,14 +2,10 @@ package com.sentinel.banking_api.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
 import com.sentinel.banking_api.exception.AccountNotFoundException;
-import com.sentinel.banking_api.model.Account;
-import com.sentinel.banking_api.model.Transaction;
-import com.sentinel.banking_api.model.TransactionType;
-import com.sentinel.banking_api.repository.AccountRepository;
-import com.sentinel.banking_api.repository.TransactionRepository;
+import com.sentinel.banking_api.model.*;
+import com.sentinel.banking_api.repository.*;
 
 import jakarta.transaction.Transactional;
 
@@ -34,7 +30,7 @@ public class AccountService {
     }
 
     public List<Account> getAllAccounts() {
-        return accountRepository.findAll();
+        return accountRepository.findByActiveTrue();
     }
 
     public void deleteAccount(Long id) {
@@ -42,7 +38,8 @@ public class AccountService {
         .orElseThrow(() -> new RuntimeException("Account not found"));
         if(account.getBalance()>0)
             throw new RuntimeException("Cannot delete account with a remaining balance");
-        accountRepository.delete(account);
+        account.setActive(false);
+        accountRepository.save(account);
         }
 
     public Account deposit(Long id, double amount) {
@@ -113,6 +110,26 @@ public class AccountService {
         transactionRepository.save(transactionFrom);
         transactionRepository.save(transactionTo);
     } 
+
+    public void calculateInterest() {
+        List<Account> activeAccounts=accountRepository.findByActiveTrue();
+        for(Account account: activeAccounts) {
+            double currentBalance=account.getBalance();
+            double rate=account.getInterestRate();
+            double interestEarned=currentBalance*rate;
+            account.setBalance(currentBalance+interestEarned);
+            accountRepository.save(account);
+
+            Transaction interestTx=new Transaction(
+            account.getId(),
+            interestEarned,
+            TransactionType.INTEREST,
+            "Monthly Interest Earned at "+(rate*100)+"%",
+            LocalDateTime.now()
+        );
+        transactionRepository.save(interestTx);
+        }
+    }
 
     public List<Transaction> getAccountHistory(Long accountId) {
         return transactionRepository.findByAccountIdOrderByTimestampDesc(accountId);

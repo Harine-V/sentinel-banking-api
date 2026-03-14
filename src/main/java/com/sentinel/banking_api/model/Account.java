@@ -16,7 +16,9 @@ public class Account {
     private Long id;
 
     @Column(name = "account_holder_name")
+
     @JsonProperty("accountHolderName")
+
     @NotBlank(message = "Account holder name is required")
     private String accountHolderName;
 
@@ -24,6 +26,12 @@ public class Account {
     @NotNull(message = "Balance cannot be null")
     @Min(value =0, message="Balance cannot be negative")
     private double balance;
+
+    @Column(columnDefinition = "boolean default true")
+    private boolean active=true;
+
+    @Column(nullable = false, columnDefinition = "DOUBLE PRECISION DEFAULT 0.07")
+    private double interestRate=0.07;
 
     public Account() {}
 
@@ -36,8 +44,10 @@ public class Account {
     public Long getId() {return id;}
     public String getAccountHolderName() { return accountHolderName; }
     public double getBalance() { return balance;}
+    public boolean isActive() { return active; }
 
     public void setId(Long id) {this.id=id;}
     public void setAccountHolderName(String accountHolderName) {this.accountHolderName=accountHolderName;}
     public void setBalance(double balance) {this.balance=balance;}
+    public void setActive(boolean active) { this.active = active; }
 }
